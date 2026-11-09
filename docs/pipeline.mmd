@@ -1,0 +1,22 @@
+%% Source for docs/pipeline.png. Re-render with:
+%%   mmdc -i docs/pipeline.mmd -o docs/pipeline.png -s 2 -b white
+flowchart TD
+    P["Synthetic PDF packet"] --> T["Code: page-tagged text"]
+    K[("Criteria file v1.0.0")] --> C2
+    T --> C1["Model call 1:<br/>extract clinical details"]
+    T --> C2["Model call 2:<br/>assess each criterion part"]
+    C1 --> V["Code: schema check,<br/>quote-on-page check"]
+    C2 --> V
+    V --> S["Code: criterion status<br/>from its parts"]
+    S --> R["Code: route and<br/>7-day clock"]
+    R --> N["Nurse: confirm or override,<br/>choose next step"]
+    N --> A[("Hash-chained audit log")]
+
+    classDef code fill:#EEF2FF,stroke:#6366F1,color:#1E1B4B
+    classDef model fill:#FEF3C7,stroke:#D97706,color:#451A03
+    classDef nurse fill:#DCFCE7,stroke:#16A34A,color:#052E16
+    classDef data fill:#F3F4F6,stroke:#6B7280,color:#111827
+    class T,V,S,R code
+    class C1,C2 model
+    class N nurse
+    class P,K,A data

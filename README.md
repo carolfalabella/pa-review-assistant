@@ -42,19 +42,9 @@ Every push also runs the tests and the secret scan on GitHub (Python 3.11 and 3.
 
 ## How it works
 
-```mermaid
-flowchart TD
-    P[Synthetic PDF packet] --> T[Code: page-tagged text]
-    K[(Criteria file v1.0.0)] --> C2
-    T --> C1[Model call 1: extract clinical details]
-    T --> C2[Model call 2: assess each criterion part]
-    C1 --> V[Code: schema check, quote-on-page check]
-    C2 --> V
-    V --> S[Code: criterion status from its parts]
-    S --> R[Code: route and 7-day clock]
-    R --> N[Nurse: confirm or override, choose next step]
-    N --> A[(Hash-chained audit log)]
-```
+<img src="docs/pipeline.png" width="480" alt="Pipeline: the synthetic PDF packet becomes page-tagged text (code). Two model calls run in parallel: one extracts clinical details, one assesses each criterion part against the criteria file. Code then checks the schema and that every quote is on its cited page, computes each criterion status from its parts, and routes the case with the 7-day clock. The nurse confirms or overrides and chooses the next step. Every step goes to a hash-chained audit log.">
+
+**Blue:** code. **Amber:** model calls. **Green:** the nurse. Diagram source: `docs/pipeline.mmd`.
 
 A straightforward pipeline, not cooperating agents. Prior authorization review follows a fixed order, and each step has to be testable and auditable.
 
@@ -115,7 +105,7 @@ Limits of this evaluation: one synthetic case family, author-written expected re
 ## Assumptions
 
 - The plan reviews advanced imaging itself rather than delegating it.
-- An "applicable authority" step (Medicare coverage rules such as an LCD) runs before criteria matching in production. This demo starts after that step and did not establish an LCD(Local Coverage Determination).
+- An "applicable authority" step (Medicare coverage rules such as an LCD) runs before criteria matching in production. This demo starts after that step and did not establish an LCD.
 - Nurses may approve when every criterion is met after review; any potential adverse decision goes to a licensed reviewer. Plan procedures vary and would be configured.
 - The decision clock starts at receipt and keeps running while information is requested. Medicare Advantage standard requests use 7 calendar days; the demo starts the clock when the packet is loaded.
 - Packets are text-based PDFs of 6-10 pages. Production packets are often longer and scanned.
@@ -181,6 +171,7 @@ src/
 scripts/
   eval_cases.py              Scores a provider against the three packets
   secret_scan.py             Pre-push check for keys and .env files
+docs/                        Pipeline diagram (PNG and its Mermaid source)
 runs/saved/                  Recorded Gemini runs for replay (current prompt version)
 tests/                       Offline tests; the app tests need Streamlit installed
 ```

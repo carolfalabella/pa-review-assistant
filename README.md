@@ -83,7 +83,7 @@ These are properties of the code, not instructions in a prompt:
 - **Approve is gated.** It stays disabled until every criterion is reviewed and every final status is met. Overriding the AI, or changing a saved review, requires a written reason.
 - **Information requests use a fixed template,** not a model call, and are labeled as drafts a person edits and approves.
 
-**Limit to state plainly:** a verified quote proves the text exists on that page. It does not prove the text supports the status. That is why the nurse confirms every criterion, and why the evaluation set matters.
+**Limit to state plainly:** a verified quote proves the text exists on that page. It does not prove the text supports the status. That is why the nurse confirms every criterion, and why the evaluation set matters. In production, a second model acting as a judge would flag parts where a real quote may not support the status (see Path to production).
 
 ## Evaluation
 
@@ -115,7 +115,7 @@ Limits of this evaluation: one synthetic case family, author-written expected re
 ## Assumptions
 
 - The plan reviews advanced imaging itself rather than delegating it.
-- An "applicable authority" step (Medicare coverage rules such as an LCD) runs before criteria matching in production. This demo starts after that step and did not establish an LCD.
+- An "applicable authority" step (Medicare coverage rules such as an LCD) runs before criteria matching in production. This demo starts after that step and did not establish an LCD(Local Coverage Determination).
 - Nurses may approve when every criterion is met after review; any potential adverse decision goes to a licensed reviewer. Plan procedures vary and would be configured.
 - The decision clock starts at receipt and keeps running while information is requested. Medicare Advantage standard requests use 7 calendar days; the demo starts the clock when the packet is loaded.
 - Packets are text-based PDFs of 6-10 pages. Production packets are often longer and scanned.
@@ -151,10 +151,10 @@ This demo sends synthetic text to a free-tier API. Free-tier terms allow the pro
 | Structured output validation | Schema with a fixed status list, checked in code | Versioned schemas; every failure counted and reviewed |
 | Criteria library | One JSON file, version 1.0.0 | Versioned registry with exact lookup by service, line of business, state, and date; licensed content used only as its license allows; clinical leaders and the UM committee approve changes |
 | Confidence and escalation | Verified or unverified | Thresholds calibrated against a labeled evaluation set of past cases; low-confidence or high-risk cases escalated |
-| Guardrails against made-up facts | Quote-on-page check, evidence for each part, nurse confirmation | The same, plus regular evaluation on past cases and monitoring of override rates and drift |
+| Guardrails against made-up facts | Quote-on-page check, evidence for each part, nurse confirmation | The same code checks first, then a second model as a judge (LLM-as-a-judge) on each part: does this quote actually support this status? Ideally a different model, so it doesn't share the first one's blind spots. It only flags; the nurse decides. Measured against labeled past cases before use, then monitored with override rates and drift |
 | Audit and observability | Local hash-chained file | Central audit service feeding the plan's security monitoring; dashboards for latency, retries, verification failures, and overrides |
 | Intake | One local PDF | Fax, portal, X12 278, and FHIR (Da Vinci CRD, DTR, PAS); OCR with a page-quality check |
-| Conflicting records | Prompt rule: quote both sides, return not met | Explicit conflict flag shown to the reviewer |
+| Conflicting records | Prompt rule: quote both sides, return not met (no test packet yet) | A test packet with a true conflict, and an explicit conflict flag shown to the reviewer |
 | Long records | Whole packet in the prompt | Find relevant pages first; criteria still selected by exact lookup |
 | Rollout | Demo | Past-case replay, then shadow mode alongside nurses, then live use after compliance, security, and clinical sign-off |
 
@@ -190,6 +190,7 @@ tests/                       Offline tests; the app tests need Streamlit install
 - No licensed clinician has reviewed the case, the criteria, or the expected results.
 - One synthetic case family; results don't generalize.
 - Text-based PDFs only; no OCR or handwriting.
+- The conflicting-records rule is in the prompt, but no packet tests it yet.
 - The member, provider, and clock are fixed stand-ins, not lookups.
 - The demo nurse is a single fixed user; there is no sign-in or role model.
 - `generateContent` structured output is called over REST; check Google's current documentation before relying on it.

@@ -1,0 +1,9 @@
+[project]
+name = "pa-review-assistant"
+version = "0.1.0"
+description = "Prior authorization review assistant demo. Synthetic data only; criteria are illustrative."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

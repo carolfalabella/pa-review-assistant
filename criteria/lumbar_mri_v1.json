@@ -1,0 +1,93 @@
+{
+  "criteria_set_id": "lumbar_mri_outpatient",
+  "version": "1.0.0",
+  "effective_date": "2026-11-01",
+  "label": "ILLUSTRATIVE ONLY - self-written for a synthetic demo. Not a coverage policy, not MCG or InterQual content, not clinically validated.",
+  "applies_to": {
+    "service": "MRI lumbar spine without contrast",
+    "cpt": ["72148"],
+    "line_of_business": ["medicare_advantage"],
+    "setting": "outpatient"
+  },
+  "reference_date_rule": "Time windows are measured back from the date of the provider's request letter.",
+  "status_rules": {
+    "met": "The record contains evidence that supports this part.",
+    "not_met": "The record contains evidence that contradicts this part.",
+    "missing": "The record does not address this part. Silence is never not_met."
+  },
+  "rule_rollup": "Computed in code, not by the model: any part not_met -> rule not_met; else any part missing -> rule missing; else all parts met -> rule met. Any met or not_met part without a verified quote -> rule unverified, routed to human review.",
+  "criteria": [
+    {
+      "id": "C1",
+      "title": "Low back pain with radicular symptoms is documented",
+      "elements": [
+        {
+          "id": "C1a",
+          "text": "Low back pain is documented.",
+          "met_when": "A clinical note describes low back or lumbar pain.",
+          "not_met_when": "A note states the patient has no low back pain."
+        },
+        {
+          "id": "C1b",
+          "text": "Radicular symptoms or signs are documented (pain, numbness, or weakness radiating into a leg, or a positive straight-leg raise).",
+          "met_when": "A note describes radiating leg symptoms or a positive radicular exam finding.",
+          "not_met_when": "A note states there are no radicular symptoms and a negative radicular exam."
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "title": "At least 6 weeks of conservative treatment in the last 6 months, including an active component, with inadequate response",
+      "elements": [
+        {
+          "id": "C2a",
+          "text": "Conservative treatment lasted at least 6 weeks.",
+          "met_when": "Dates or durations show 6 weeks or more of treatment.",
+          "not_met_when": "Dates or durations show less than 6 weeks of treatment in total."
+        },
+        {
+          "id": "C2b",
+          "text": "The treatment took place within the 6 months before the request date.",
+          "met_when": "Treatment dates fall within 6 months before the request letter date.",
+          "not_met_when": "All documented treatment ended more than 6 months before the request letter date."
+        },
+        {
+          "id": "C2c",
+          "text": "Treatment included an active component (physical therapy or a supervised or home exercise program).",
+          "met_when": "Physical therapy or an exercise program is documented as delivered.",
+          "not_met_when": "The record states the patient received only passive treatment such as medication or rest."
+        },
+        {
+          "id": "C2d",
+          "text": "Response to treatment was inadequate.",
+          "met_when": "A note documents persistent symptoms or limited improvement after treatment.",
+          "not_met_when": "A note documents that symptoms resolved or substantially improved."
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "title": "No lumbar MRI or CT in the prior 12 months",
+      "elements": [
+        {
+          "id": "C3a",
+          "text": "No lumbar spine MRI or CT was performed in the 12 months before the request date.",
+          "met_when": "The record explicitly states no prior lumbar imaging, or prior lumbar MRI/CT is dated more than 12 months before the request.",
+          "not_met_when": "The record documents a lumbar MRI or CT within 12 months before the request date."
+        }
+      ]
+    },
+    {
+      "id": "C4",
+      "title": "The ordering clinician documents how the new imaging would change management",
+      "elements": [
+        {
+          "id": "C4a",
+          "text": "The ordering clinician states how MRI results would change the treatment plan (for example, a planned injection, surgical consultation, or a specific decision that depends on the result).",
+          "met_when": "A note links the imaging result to a specific management decision.",
+          "not_met_when": "A note states that imaging will not change management."
+        }
+      ]
+    }
+  ]
+}

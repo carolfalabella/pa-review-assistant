@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local run output (audit log, eval reports). Saved demo runs are committed on purpose.
+runs/*
+!runs/saved/
+runs/saved/*
+!runs/saved/*.json
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Never commit private reference documents
+*Assignment*.pdf

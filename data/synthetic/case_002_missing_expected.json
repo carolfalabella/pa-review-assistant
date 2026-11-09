@@ -1,0 +1,46 @@
+{
+  "case_id": "case_002_missing",
+  "purpose": "Evaluation variant. Same as case_001, but the PT summary gives no dates, visit count, or duration. Tests that the model returns missing, not met and not not_met, when the record is silent.",
+  "note": "Ground truth written by the demo author, not reviewed by a licensed clinician. Never sent to the model.",
+  "request_date": "2026-11-02",
+  "how_to_score": "Rule-level status must match exactly. Part-level status must match 'status' or be listed in 'also_accept'. Any met or not_met part must have a verified quote.",
+  "criteria": {
+    "C1": {
+      "status": "met",
+      "elements": {
+        "C1a": {"status": "met", "anchors": [{"page": 3, "quote": "Low back pain radiating to the right leg"}]},
+        "C1b": {"status": "met", "anchors": [{"page": 4, "quote": "Straight-leg raise is positive on the right at 40 degrees"}]}
+      }
+    },
+    "C2": {
+      "status": "missing",
+      "elements": {
+        "C2a": {"status": "missing", "anchors": []},
+        "C2b": {
+          "status": "missing",
+          "also_accept": ["met"],
+          "why_ambiguous": "No PT dates remain, but the 08/20/2026 referral (page 8) and the 10/28/2026 note saying PT was completed (page 3) place therapy inside the 6-month window. A model may reasonably infer met.",
+          "anchors": []
+        },
+        "C2c": {"status": "met", "anchors": [{"page": 6, "quote": "Therapeutic exercise including core stabilization and directional preference exercises"}]},
+        "C2d": {"status": "met", "anchors": [{"page": 7, "quote": "Radicular symptoms in the right lower extremity persist"}]}
+      }
+    },
+    "C3": {
+      "status": "not_met",
+      "elements": {
+        "C3a": {"status": "not_met", "anchors": [{"page": 3, "quote": "Lumbar spine MRI without contrast on 06/18/2026 at Lakeview Imaging Center"}]}
+      }
+    },
+    "C4": {
+      "status": "missing",
+      "elements": {
+        "C4a": {"status": "missing", "anchors": []}
+      }
+    }
+  },
+  "traps": [
+    "Page 8 plans PT '2 visits per week for 6 to 8 weeks'. That is an order, not proof of delivered treatment. A model that cites it for C2a has confused a plan with a fact.",
+    "Page 3 says 'completed a course of physical therapy' with no duration. That supports C2c, not C2a."
+  ]
+}

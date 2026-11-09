@@ -1,0 +1,48 @@
+{
+  "case_id": "case_003_not_met",
+  "purpose": "Evaluation variant. Same patient, but physical therapy worked and every document agrees. The physician orders the MRI anyway. Tests that explicit contrary evidence yields not_met.",
+  "note": "Ground truth written by the demo author, not reviewed by a licensed clinician. Never sent to the model.",
+  "request_date": "2026-11-02",
+  "how_to_score": "Rule-level status must match exactly. Part-level status must match 'status' or be listed in 'also_accept'. Any met or not_met part must have a verified quote.",
+  "criteria": {
+    "C1": {
+      "status": "met",
+      "elements": {
+        "C1a": {"status": "met", "anchors": [{"page": 3, "quote": "Low back pain radiating to the right leg"}]},
+        "C1b": {"status": "met", "anchors": [
+          {"page": 3, "quote": "the pain radiated from the right buttock down the lateral thigh and calf to the top of the right foot"},
+          {"page": 8, "quote": "Straight-leg raise is positive on the right at 35 degrees"}
+        ]}
+      }
+    },
+    "C2": {
+      "status": "not_met",
+      "elements": {
+        "C2a": {"status": "met", "anchors": [{"page": 6, "quote": "Dates of care: 08/24/2026 to 10/16/2026"}]},
+        "C2b": {"status": "met", "anchors": [{"page": 6, "quote": "Dates of care: 08/24/2026 to 10/16/2026"}]},
+        "C2c": {"status": "met", "anchors": [{"page": 6, "quote": "Therapeutic exercise including core stabilization and directional preference exercises"}]},
+        "C2d": {"status": "not_met", "anchors": [
+          {"page": 7, "quote": "The patient demonstrated substantial improvement in pain and function over the episode of care"},
+          {"page": 3, "quote": "The patient completed a course of physical therapy with substantial improvement"}
+        ]}
+      }
+    },
+    "C3": {
+      "status": "not_met",
+      "elements": {
+        "C3a": {"status": "not_met", "anchors": [{"page": 3, "quote": "Lumbar spine MRI without contrast on 06/18/2026 at Lakeview Imaging Center"}]}
+      }
+    },
+    "C4": {
+      "status": "missing",
+      "elements": {
+        "C4a": {"status": "missing", "anchors": []}
+      }
+    }
+  },
+  "traps": [
+    "Page 2 still says the patient 'continues to have intermittent symptoms'. Mild residual symptoms after substantial improvement are not an inadequate response.",
+    "Page 5 gives the patient's wish to understand the cause as the reason for imaging. That is not a management decision, so C4 stays missing.",
+    "Page 4 (10/28) has a negative straight-leg raise; page 8 (08/20) has a positive one. That is change over time, not a conflict. C1b is met from the page 3 history and page 8 exam. Qwen3.5 4B got this wrong on Nov 8 under prompt 2026-11-07.1."
+  ]
+}

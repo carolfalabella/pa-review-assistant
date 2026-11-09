@@ -1,0 +1,56 @@
+{
+  "case_id": "case_001",
+  "purpose": "Golden demo case. The packet shown live.",
+  "note": "Ground truth for the synthetic golden case. Written by the demo author, not reviewed by a licensed clinician. Never sent to the model.",
+  "request_date": "2026-11-02",
+  "how_to_score": "Rule-level status must match exactly. Part-level status must match 'status' or be listed in 'also_accept'. Any met or not_met part must have a verified quote.",
+  "extraction": {
+    "diagnosis": {"must_mention": ["radiculopathy"], "anchors": [{"page": 1, "quote": "M54.16 Radiculopathy, lumbar region"}]},
+    "requested_service": {"must_mention": ["mri", "lumbar"], "anchors": [{"page": 1, "quote": "MRI lumbar spine without contrast"}]},
+    "relevant_history": {"must_mention": ["06/18/2026"], "anchors": [{"page": 3, "quote": "Lumbar spine MRI without contrast on 06/18/2026 at Lakeview Imaging Center"}]},
+    "supporting_findings": {"must_mention": ["straight-leg raise"], "anchors": [{"page": 4, "quote": "Straight-leg raise is positive on the right at 40 degrees"}]}
+  },
+  "criteria": {
+    "C1": {
+      "status": "met",
+      "elements": {
+        "C1a": {"status": "met", "anchors": [{"page": 3, "quote": "Low back pain radiating to the right leg"}]},
+        "C1b": {"status": "met", "anchors": [
+          {"page": 3, "quote": "the pain radiates from the right buttock down the lateral thigh and calf to the top of the right foot"},
+          {"page": 4, "quote": "Straight-leg raise is positive on the right at 40 degrees"}
+        ]}
+      }
+    },
+    "C2": {
+      "status": "met",
+      "elements": {
+        "C2a": {"status": "met", "anchors": [{"page": 6, "quote": "Dates of care: 08/24/2026 to 10/16/2026"}]},
+        "C2b": {"status": "met", "anchors": [{"page": 6, "quote": "Dates of care: 08/24/2026 to 10/16/2026"}]},
+        "C2c": {"status": "met", "anchors": [{"page": 6, "quote": "Therapeutic exercise including core stabilization and directional preference exercises"}]},
+        "C2d": {"status": "met", "anchors": [
+          {"page": 7, "quote": "The patient demonstrated minimal improvement in pain and function over the episode of care"},
+          {"page": 7, "quote": "Radicular symptoms in the right lower extremity persist"}
+        ]}
+      }
+    },
+    "C3": {
+      "status": "not_met",
+      "elements": {
+        "C3a": {"status": "not_met", "anchors": [{"page": 3, "quote": "Lumbar spine MRI without contrast on 06/18/2026 at Lakeview Imaging Center"}]}
+      }
+    },
+    "C4": {
+      "status": "missing",
+      "elements": {
+        "C4a": {"status": "missing", "anchors": []}
+      }
+    }
+  },
+  "traps": [
+    "Page 2 says 'failed conservative management' with no dates. C2 must come from the PT summary, not this sentence alone.",
+    "Page 8 plans PT '2 visits per week for 6 to 8 weeks'. A plan is not proof of delivered treatment; C2a should cite page 6.",
+    "Page 2 says 'medically necessary for further evaluation'. That does not link imaging to a management decision, so C4 stays missing.",
+    "Page 8 mentions a June 2026 MRI without a full date. Page 3 gives 06/18/2026, the stronger citation for C3.",
+    "The 4+/5 great toe weakness appears on both page 8 (08/20) and page 4 (10/28, 'unchanged'). It is stable, not progressive, so it is not a red flag and does not contradict page 3."
+  ]
+}

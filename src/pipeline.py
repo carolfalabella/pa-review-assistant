@@ -4,6 +4,13 @@ Ingest -> Parse -> (stand-in) Read Details & Match -> Rule Selection
   -> [Extract Clinical Details  ||  Check & Summary]   (two model calls, in parallel)
   -> code checks -> Route & Deadline -> audit record
 
+1. read the PDF
+2. load the case details and criteria
+3. make both model calls
+4. check the quotes and work out each criterion’s status
+5. route the case and set the deadline
+6. write the audit record
+
 Command line:
   python -m src.pipeline data/synthetic/case_001.pdf
   python -m src.pipeline data/synthetic/case_001.pdf --provider ollama --save
@@ -34,11 +41,13 @@ from .verify import verify_check, verify_extraction
 
 
 def sha256_file(path: Path) -> str:
+    """Return the SHA-256 digest of a file's contents."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
-
+# The app calls this for both live and saved runs 
 def run_case(pdf_path: str | Path, settings: Settings | None = None, provider=None,
              audit: AuditLog | None = None, on_wait: WaitCallback | None = None) -> dict:
+    """Process a packet and return its verified review results and routing."""
     settings = settings or load_settings()
     pdf_path = Path(pdf_path)
     case_id = pdf_path.stem
@@ -136,6 +145,7 @@ def save_run(result: dict, out_dir: Path) -> Path:
 
 
 def summarize(result: dict) -> str:
+    """Format a review result as a concise, human-readable report."""
     lines = [
         f"Run {result['run_id']}  case {result['case_id']}  {result['provider']}/{result['model']}  "
         f"{result['seconds']}s",
@@ -172,6 +182,7 @@ def summarize(result: dict) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse command-line options, run the review, and print its result."""
     ap = argparse.ArgumentParser(description="Run the PA review pipeline on one synthetic packet.")
     ap.add_argument("pdf")
     ap.add_argument("--provider", choices=["gemini", "ollama", "saved"])
@@ -187,6 +198,7 @@ def main(argv: list[str] | None = None) -> int:
         settings = settings.with_(saved_run=Path(args.saved_run))
 
     def on_wait(call, attempt, wait, reason):
+        """Report a retry wait while a provider call is running."""
         print(f"  [{call}] busy ({reason}); retrying in {wait}s (attempt {attempt})", file=sys.stderr)
 
     audit = AuditLog(settings.runs_dir / "audit.jsonl")

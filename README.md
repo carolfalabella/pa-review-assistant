@@ -1,5 +1,7 @@
 # PA Review Assistant (demo)
 
+[![tests](https://github.com/carolfalabella/pa-review-assistant/actions/workflows/tests.yml/badge.svg)](https://github.com/carolfalabella/pa-review-assistant/actions/workflows/tests.yml)
+
 > **Synthetic data only.** Every patient, member, provider, and clinical detail in this repository is invented. Never use it with real patient data.
 >
 > **Criteria are illustrative.** The four sample criteria were written for this demo. They are not a coverage policy, not MCG or InterQual content, and have not been reviewed by a licensed clinician.
@@ -36,10 +38,12 @@ python -m scripts.eval_cases --pause 30                         # score all thre
 python -m scripts.secret_scan                                   # run before every push
 ```
 
+Every push also runs the tests and the secret scan on GitHub (Python 3.11 and 3.13). A change that adds a deny value, lets a missing result become not met, or lets an override skip its reason fails the build.
+
 ## How it works
 
 ```mermaid
-flowchart LR
+flowchart TD
     P[Synthetic PDF packet] --> T[Code: page-tagged text]
     K[(Criteria file v1.0.0)] --> C2
     T --> C1[Model call 1: extract clinical details]

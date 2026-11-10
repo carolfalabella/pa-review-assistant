@@ -105,9 +105,9 @@ Limits of this evaluation: one synthetic case family, author-written expected re
 ## Assumptions
 
 - The plan reviews advanced imaging itself rather than delegating it.
-- An "applicable authority" step (Medicare coverage rules such as an LCD) runs before criteria matching in production. This demo starts after that step and did not establish an LCD.
+- An "applicable authority" step runs before criteria matching in production. Medicare Advantage plans must follow Traditional Medicare coverage rules, including National and Local Coverage Determinations (NCDs and LCDs), and may use their own publicly posted, evidence-based criteria only where Medicare's are "not fully established" (42 CFR 422.101(b), from the Contract Year 2024 rule, CMS-4201-F). This demo starts after that step and did not check whether an NCD or LCD applies.
 - Nurses may approve when every criterion is met after review; any potential adverse decision goes to a licensed reviewer. Plan procedures vary and would be configured.
-- The decision clock starts at receipt and keeps running while information is requested. Medicare Advantage standard requests use 7 calendar days; the demo starts the clock when the packet is loaded.
+- The decision clock starts at receipt. For Medicare Advantage, a standard prior authorization decision is due within 7 calendar days (42 CFR 422.568(b)(1)(ii), from January 1, 2026). Asking for information does not pause it. An extension of up to 14 days is allowed only in specific cases, such as the enrollee asking or needed evidence from a non-contract provider, with written notice. A missed deadline itself counts as an adverse decision the enrollee can appeal (422.568(f)). The demo starts the clock when the packet is loaded.
 - Packets are text-based PDFs of 6-10 pages. Production packets are often longer and scanned.
 
 ## Trade-offs
